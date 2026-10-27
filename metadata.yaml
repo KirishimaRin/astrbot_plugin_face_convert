@@ -1,5 +1,5 @@
 name: astrbot_plugin_face_convert
-desc: 把 LLM 回复里的 /表情 速记（/得意 /呲牙 /偷感 等）转换为真实 QQ 小表情（Face 组件）。仅 aiocqhttp（NapCat/Lagrange）平台生效。配合"飞天大草"人格使用，人格原样输出 /X 速记即可。
-version: v1.0.0
+desc: 合并纯文字回复为单行，把 /表情 转换为 QQ Face，每轮以 25% 概率保留最多一个候选表情。配合关闭 AstrBot 分段回复使用。
+version: v1.1.0
 author: RINCyaro
 repo: https://github.com/KirishimaRin/astrbot_plugin_face_convert
