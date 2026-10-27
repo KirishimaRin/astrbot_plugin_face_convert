@@ -1,7 +1,9 @@
+import math
 import random
 import re
 
 import astrbot.api.message_components as Comp
+from astrbot.api import AstrBotConfig
 from astrbot.api.event import AstrMessageEvent, filter
 from astrbot.api.star import Context, Star, register
 
@@ -27,19 +29,28 @@ FACE_MAP = {
 TOKEN_RE = re.compile(
     "/(" + "|".join(sorted(FACE_MAP, key=len, reverse=True)) + ")"
 )
-# 有表情候选的回复，每轮只抽一次；纯文字回复不强加表情。
-FACE_PROBABILITY = 0.25
+DEFAULT_FACE_PERCENT = 25
 
 
 @register(
     "astrbot_plugin_face_convert",
     "RINCyaro",
-    "合并单行回复，并以 25% 概率保留最多一个 QQ 表情",
-    "1.1.0",
+    "合并单行回复，按后台设置的概率保留最多一个 QQ 表情",
+    "1.2.0",
 )
 class FaceConvertPlugin(Star):
-    def __init__(self, context: Context):
+    def __init__(self, context: Context, config: AstrBotConfig):
         super().__init__(context)
+        self.config = config
+
+    def _face_probability(self) -> float:
+        try:
+            percent = float(self.config.get("face_probability_percent", DEFAULT_FACE_PERCENT))
+        except (TypeError, ValueError, OverflowError):
+            return DEFAULT_FACE_PERCENT / 100
+        if not math.isfinite(percent):
+            return DEFAULT_FACE_PERCENT / 100
+        return max(0.0, min(100.0, percent)) / 100
 
     @filter.on_decorating_result()
     async def convert_faces(self, event: AstrMessageEvent):
@@ -65,7 +76,7 @@ class FaceConvertPlugin(Star):
             return
         text = " ".join(" ".join(texts).split()).strip()
         new_chain = [Comp.Plain(text)] if text else []
-        if faces and random.random() < FACE_PROBABILITY:
+        if faces and random.random() < self._face_probability():
             new_chain.append(faces[0])
         result.chain.clear()
         result.chain.extend(new_chain)

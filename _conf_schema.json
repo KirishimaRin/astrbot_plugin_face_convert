@@ -1,0 +1,9 @@
+{
+  "face_probability_percent": {
+    "description": "表情保留概率（%）",
+    "type": "int",
+    "default": 25,
+    "slider": { "min": 0, "max": 100, "step": 1 },
+    "hint": "有表情候选时，每轮按此概率保留最多一个。0 为全部去掉，100 为始终保留；纯文字回复不额外添加表情。"
+  }
+}

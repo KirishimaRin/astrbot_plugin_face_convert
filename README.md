@@ -1,6 +1,16 @@
 # astrbot_plugin_face_convert
 
-把纯文字回复合并为单行，并以 25% 概率保留最多一个真实 QQ 小表情的 [AstrBot](https://github.com/AstrBotDevs/AstrBot) 插件。
+把纯文字回复合并为单行，并按设定概率保留最多一个真实 QQ 小表情的 [AstrBot](https://github.com/AstrBotDevs/AstrBot) 插件。
+
+## 后台配置（v1.2.0）
+
+进入 **插件 → 已安装 → 本插件 → 齿轮（插件配置）**，调整「表情保留概率（%）」并保存。更新后首次使用请重载插件，让 AstrBot 识别新增配置项。
+
+- 范围 **0～100**，默认 **25**；0 表示去掉全部候选表情，100 表示有候选时始终保留一个。
+- 插件处理每条回复时读取当前配置；保存后按新值处理后续回复。若所用 AstrBot 版本未自动应用配置，重载插件即可。
+- 纯文字回复仍保持纯文字；图片、引用和其他媒体消息沿用原结构。
+
+配置入口使用 AstrBot 原生的 [`_conf_schema.json` 配置机制](https://github.com/AstrBotDevs/AstrBot/blob/master/docs/zh/dev/star/guides/plugin-config.md)。
 
 ## v1.1.0：单条文字与可选表情
 
@@ -9,7 +19,7 @@
 - 文字中的换行合并为空格，输出一个 Plain 组件，表情追加到同一消息末尾。
 - 包含图片、引用或其他组件的消息沿用原结构。
 - 在 AstrBot WebUI 关闭「分段回复」，让文字和可选表情一起发送；重新载入插件。
-- 默认概率在 `main.py` 的 `FACE_PROBABILITY = 0.25` 修改。概率只作用于 QQ 小表情；人格已要求不用 Unicode emoji 或字符颜文字。
+- 概率可在后台配置，默认 25%。概率只作用于 QQ 小表情；人格应避免叠加 Unicode emoji 或字符颜文字。
 - 处理只扫描当前回复，时间复杂度 O(n)，不增加模型或网络请求。
 
 ## 为什么需要它
